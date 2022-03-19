@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:zoqa/controller/controller.dart';
 import 'package:zoqa/controller/subCategory_controller.dart';
@@ -13,16 +14,14 @@ class ProductCategory extends StatefulWidget {
 }
 
 class _ProductCategoryState extends State<ProductCategory> {
+  bool shouldPop = true;
   int? tappedIndex;
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
-  // @override
-  // void dispose() {
-  //   // TODO: implement dispose
-  //   super.dispose();
-  // }
+
+  @override
+  void deactivate() {
+    Provider.of<Controller>(context, listen: false).clearsubCategory();
+    super.deactivate();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,73 +29,109 @@ class _ProductCategoryState extends State<ProductCategory> {
     List<String> category = [];
     return Scaffold(
         appBar: AppBar(
-          actions: [
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {},
-            )
-          ],
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
           title: Text(widget.catName.toString()),
         ),
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
+        body: Container(
+          height: double.infinity,
+          width: double.infinity,
+          // scrollDirection: Axis.vertical,
           child: Consumer<Controller>(
             builder: (context, value, child) {
-              if (value.subcategoryList!.length == 0 ||
-                  value.subcategoryList! == null ||
-                  value.subcategoryList!.isEmpty) {
-                return Container(
-                  height: size.height*0.75,
-                  alignment: Alignment.center,
-                  child: Text(
-                    "No Products Exist in ${widget.catName}",
-                    style: TextStyle(fontSize: 20),
-                  ),
+              if (value.isLoading == true) {
+                return Center(
+                  // alignment: Alignment.center,
+                  child: CircularProgressIndicator(),
                 );
               } else {
-                print("length;;;;;;;;;;;;;;;;${value.subcategoryList!.length}");
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: value.subcategoryList!.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Ink(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: tappedIndex == index
-                              ? Colors.green
-                              : Colors.grey[300],
-                        ),
-                        child: ListTile(
-                          onTap: () {
-                            value.postProductList(
-                                value.subcategoryList![index]["cat_id"],
-                                context);
-                            setState(() {
-                              tappedIndex = index;
-                            });
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Base(
-                                        subCatName:
-                                            value.subcategoryList![index]
-                                                ["cat_name"],
-                                      )),
-                            );
-                          },
-                          title: Text(
-                            value.subcategoryList![index]["cat_name"],
-                            style:
-                                TextStyle(fontFamily: "poppins", fontSize: 20),
+                if (value.subcategoryList!.length == 0 ||
+                    value.subcategoryList! == null ||
+                    value.subcategoryList!.isEmpty) {
+                  return Container(
+                    height: double.infinity,
+                    width: double.infinity,
+                    // height: size.height * 0.75,
+                    alignment: Alignment.center,
+                    child: Text(
+                      "No Products Exist in ${widget.catName}",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  );
+                } else {
+                  // value.isLoading=false;
+                  print(
+                      "length;;;;;;;;;;;;;;;;${value.subcategoryList!.length}");
+                  return SingleChildScrollView(
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: value.subcategoryList!.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Ink(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: tappedIndex == index
+                                  ? Colors.red
+                                  : Colors.grey[300],
+                            ),
+                            child: ListTile(
+                              onTap: () {
+                                // setState(() {
+                                //   shouldPop = !shouldPop;
+                                // });
+                                value.postProductList(
+                                    value.subcategoryList![index]["cat_id"],
+                                    context);
+                                setState(() {
+                                  tappedIndex = index;
+                                }); // remove setstate ==> user value notifier
+
+                                // Navigator.push(
+                                //   context,
+                                //   PageTransition(
+                                //       type: PageTransitionType.rightToLeft,
+                                //       child: Base(
+                                //         subCatName:
+                                //             value.subcategoryList![index]
+                                //                 ["cat_name"],
+                                //       ),
+                                //       inheritTheme: true,
+                                //       ctx: context),
+                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Base(
+                                      subCatName: value.subcategoryList![index]
+                                          ["cat_name"],
+                                    ),
+                                  ),
+                                );
+                                // });
+                              },
+                              title: Text(
+                                value.subcategoryList![index]["cat_name"],
+                                style: TextStyle(
+                                    // fontFamily: "poppins",
+                                    fontSize: 20,
+                                    color: tappedIndex == index
+                                        ? Colors.white
+                                        : Colors.black),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    );
-                  },
-                );
+                        );
+                      },
+                    ),
+                  );
+                }
               }
             },
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:zoqa/controller/controller.dart';
 // import 'package:zoqa/controller/category_controller.dart';
@@ -11,29 +12,22 @@ class Category extends StatefulWidget {
 
 class _CategoryState extends State<Category> {
   bool isSelected = false;
-  // List<String> category = ["Kids", "Women", "Men"];
   int? tappedIndex;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    final auth =
-        Provider.of<Controller>(context, listen: false).postCategory(context);
+    Future.delayed(Duration(seconds: 0), () {
+      // final auth =
+      Provider.of<Controller>(context, listen: false).postCategory(context);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Provider.of<MainCategoryController>(context, listen: false).postCategory();
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {},
-          )
-        ],
-        title: Text("ZOQA"),
+        title: Text("G7"),
       ),
       body: Container(
         width: double.infinity,
@@ -54,28 +48,48 @@ class _CategoryState extends State<Category> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         color: tappedIndex == index
-                            ? Colors.green
+                            ? Colors.red
                             : Colors.grey[300],
                       ),
                       child: ListTile(
                         title: Text(
-                          value.categoryList![index]["mc_name"],
-                          style: TextStyle(fontFamily: "fantasy", fontSize: 20),
+                          value.categoryList![index]["mc_name"].toUpperCase(),
+                          style: TextStyle(
+                              // fontFamily: "fantasy",
+                              fontSize: 20,
+                              color: tappedIndex == index
+                                  ? Colors.white
+                                  : Colors.black),
                         ),
                         onTap: () {
                           setState(() {
                             tappedIndex = index;
                           });
+
                           value.postsubCategory(
                               value.categoryList![index]["mc_id"], context);
-                          print("mc_id-----${value.categoryList![index]["mc_id"]}");
+                          print(
+                              "mc_id-----${value.categoryList![index]["mc_id"]}");
+                          // Navigator.push(
+                          //   context,
+                          //   PageTransition(
+                          //       type: PageTransitionType.rightToLeft,
+                          //       child: ProductCategory(
+                          //         catName: value.categoryList![index]
+                          //             ["mc_name"],
+                          //       ),
+                          //       inheritTheme: true,
+                          //       ctx: context),
+                          // );
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ProductCategory(catName: value.categoryList![index]["mc_name"],),
+                              builder: (context) => ProductCategory(
+                                catName: value.categoryList![index]["mc_name"],
+                              ),
                             ),
                           );
-                         
+                          // });
                         },
                       ),
                     ),

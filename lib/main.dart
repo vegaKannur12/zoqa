@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/services.dart';
@@ -10,6 +9,7 @@ import 'package:zoqa/screen/base.dart';
 import 'package:zoqa/screen/bottom_navigation.dart';
 import 'package:zoqa/screen/category.dart';
 import 'package:zoqa/screen/detailPage.dart';
+import 'package:zoqa/screen/grid.dart';
 import 'package:zoqa/screen/newPage.dart';
 import 'package:zoqa/screen/productCategory.dart';
 import 'package:zoqa/screen/product_details.dart';
@@ -18,7 +18,8 @@ import 'controller/controller.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]).then((_){
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  // SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]).then((_){
   runApp(
     MultiProvider(
       providers: [
@@ -27,7 +28,7 @@ void main() {
       child: MyApp(),
     ),
   );
-  });
+  // });
   // HttpOverrides.global = MyHttpOverrides();
 }
 // class MyHttpOverrides extends HttpOverrides {
@@ -37,8 +38,6 @@ void main() {
 //         ..maxConnectionsPerHost = 5;
 //   }
 // }
-
-
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -51,22 +50,22 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-     
       theme: ThemeData(
-        primaryColor: Colors.green,
-        primarySwatch: Colors.green,
+        fontFamily: 'Raleway',
+        primaryColor: Color.fromARGB(255, 236, 173, 178),
+        primarySwatch: Colors.red,
         //  brightness: Brightness.dark,
         //  fontFamily: 'Georgia',
 
-        textTheme: const TextTheme(
-          headline1: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-          headline6: TextStyle(
-            fontSize: 25.0,
-          ),
-          bodyText2: TextStyle(
-            fontSize: 14.0,
-          ),
-        ),
+        // textTheme:  TextTheme(
+        //   headline1: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        //   headline6: TextStyle(
+        //     fontSize: 25.0,
+        //   ),
+        //   bodyText2: TextStyle(
+        //     fontSize: 14.0,
+        //   ),
+        // ),
       ),
       home: Category(),
       debugShowCheckedModeBanner: false,
